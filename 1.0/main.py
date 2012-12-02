@@ -28,9 +28,9 @@ class Form(QDialog):
         ss=book_search();
         print "search key :%s " % self.edit.text()
         books=ss.search(self.edit.text(),0,5)
-        book_length=len(books)
-        text="find %d book\n" % book_length
-        for item in books:
+        book_length=books['total']
+        text="find %d books\n" % book_length
+        for item in books['book_arr']:
             text+=item.title+"\n"
             
         self.textarea.setText(text)

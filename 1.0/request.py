@@ -24,11 +24,15 @@ class book_search:
         js=json.loads(data)
         jsbooks=js['books']
         #book array
-        books=[]
+        books={}
+        books['count']=js['count']
+        books['start']=js['start']
+        books['total']=js['total']
+        books['book_arr']=[];
         for item in jsbooks:
             mbook=book()
             mbook.load(item)
-            books.append(mbook)
+            books['book_arr'].append(mbook)
             mbook.showinfo()
         return books
            # print "###########################################\n\n\n"
