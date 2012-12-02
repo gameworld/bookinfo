@@ -1,9 +1,11 @@
-#!/usr/bin/python2
+#!/usr/bin/env python2
 #-*-coding:utf-8-*-
 
 import sys
 from PySide.QtGui import *
 from PySide.QtCore import *
+from request import *
+from book import *
 
 class Form(QDialog):
     def __init__(self,parent=None):
@@ -23,7 +25,15 @@ class Form(QDialog):
         self.button.clicked.connect(self.do_search)
 
     def do_search(self):
-        self.textarea.setText(self.edit.text())
+        ss=book_search();
+        print "search key :%s " % self.edit.text()
+        books=ss.search(self.edit.text(),0,5)
+        book_length=len(books)
+        text="find %d book\n" % book_length
+        for item in books:
+            text+=item.title+"\n"
+            
+        self.textarea.setText(text)
 
 if __name__=='__main__':
     app=QApplication(sys.argv)

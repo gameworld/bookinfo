@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/env python2
 #-*-coding:utf-8-*-
 
 import httplib,urllib
@@ -11,7 +11,8 @@ class book_search:
     def __init__(self):
         pass
     def search(self,key_word,start,count):
-        params=urllib.urlencode({'q':key_word,'start':start,'count':count})
+        print "search key :%s " % key_word;
+        params=urllib.urlencode({'q':key_word.encode('utf-8'),'start':start,'count':count})
         conn=httplib.HTTPConnection("api.douban.com")
         print params
         conn.request("GET","/v2/book/search?%s" % params)
@@ -21,12 +22,16 @@ class book_search:
         #f=open("data.txt","w")
         #f.write(data)
         js=json.loads(data)
-        books=js['books']
-        for item in books:
+        jsbooks=js['books']
+        #book array
+        books=[]
+        for item in jsbooks:
             mbook=book()
             mbook.load(item)
+            books.append(mbook)
             mbook.showinfo()
-            print "###########################################\n\n\n"
+        return books
+           # print "###########################################\n\n\n"
 
 
 if __name__=='__main__':
