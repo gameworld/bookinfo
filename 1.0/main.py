@@ -11,23 +11,32 @@ class Form(QDialog):
     def __init__(self,parent=None):
         super(Form,self).__init__(parent)
         self.setWindowTitle("search book")
+        self.srch_label=QLabel("搜索方式".decode('utf-8'))
+        self.srch_cmbbox=QComboBox()
+        self.srch_cmbbox.addItem("书名".decode('utf-8'),"name")
+        self.srch_cmbbox.addItem("标签".decode('utf-8'),"tag")
         self.edit=QLineEdit("enter book name here")
-        self.button=QPushButton("search")
+        self.srch_button=QPushButton("search")
         self.textarea=QTextEdit();
 
         layout=QVBoxLayout()
         hlayout=QHBoxLayout()
+        hlayout.addWidget(self.srch_label)
+        hlayout.addWidget(self.srch_cmbbox)
         hlayout.addWidget(self.edit)
-        hlayout.addWidget(self.button)
+        hlayout.addWidget(self.srch_button)
         layout.addLayout(hlayout)
         layout.addWidget(self.textarea)
         self.setLayout(layout)
-        self.button.clicked.connect(self.do_search)
+        self.srch_button.clicked.connect(self.do_search)
+        self.resize(400,300)
 
     def do_search(self):
         ss=book_search();
         print "search key :%s " % self.edit.text()
-        books=ss.search(self.edit.text(),0,5)
+        print "search type %s" % self.srch_cmbbox.currentIndex()
+
+        books=ss.search(self.edit.text(),self.srch_cmbbox.currentIndex(),0,5)
         book_length=books['total']
         text="find %d books\n" % book_length
         for item in books['book_arr']:
