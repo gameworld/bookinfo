@@ -41,7 +41,6 @@ class book_search:
             mbook=book()
             mbook.load(item)
             books['book_arr'].append(mbook)
-            mbook.title
         return books
            # print "###########################################\n\n\n"
 

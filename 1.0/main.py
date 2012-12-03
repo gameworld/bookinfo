@@ -29,9 +29,16 @@ class Form(QDialog):
         layout.addWidget(self.textarea)
         self.setLayout(layout)
         self.srch_button.clicked.connect(self.do_search)
-        self.resize(400,300)
+        self.edit.setFocus()
+        self.resize(700,400)
 
     def do_search(self):
+        key_word=self.edit.text()
+        if(key_word==""):
+            QMessageBox.information(self,"infomation",\
+                    ("请输入关键字".decode('utf-8')),
+                    QMessageBox.Ok)
+            return 
         ss=book_search();
         print "search key :%s " % self.edit.text()
         print "search type %s" % self.srch_cmbbox.currentIndex()
@@ -40,7 +47,12 @@ class Form(QDialog):
         book_length=books['total']
         text="find %d books\n" % book_length
         for item in books['book_arr']:
-            text+=item.title+"\n"
+            s_author=""
+            for author in item.author[0:-2]:
+                s_author+=author+","
+            if(len(item.author)>0):
+                s_author+=item.author[-1]
+            text+="%s\t %s \t %s \t%s\n" % (item.title,s_author,item.publisher,item.price)
             
         self.textarea.setText(text)
 
