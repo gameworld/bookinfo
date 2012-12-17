@@ -6,13 +6,14 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 from request import *
 from book import *
+from detailinfo import *
+from lrequest import *
 
 class Form(QDialog):
     def __init__(self,parent=None):
         super(Form,self).__init__(parent)
         #初始化主窗口
         self.initui()
-
 
 
         #保存当前每页显示的条数
@@ -33,23 +34,32 @@ class Form(QDialog):
                     ("请输入关键字".decode('utf-8')),
                     QMessageBox.Ok)
             return 
-        ss=book_search();
+        ss=lbook_search();
         print "search key :%s " % self.edit.text()
         print "search type %s" % self.srch_cmbbox.currentIndex()
 
-        books=ss.search(self.edit.text(),self.srch_cmbbox.currentIndex(),start,count)
-        self.total_books=books['total']
-        text="find %d books\n" % self.total_books 
-        text+="current page :%d \n"  % self.cur_page
-        for item in books['book_arr']:
+        self.books=ss.search(self.edit.text(),self.srch_cmbbox.currentIndex(),start,count)
+        self.total_books=self.books['total']
+        rtext="find %d books\n" % self.total_books 
+        rtext+="current page :%d \n"  % self.cur_page
+        self.textarea.setText(rtext)
+        j=0
+        print "books len %d" % len(self.books['book_arr'])
+        for item in self.books['book_arr']:
             s_author=""
             for author in item.author[0:-2]:
                 s_author+=author+","
             if(len(item.author)>0):
                 s_author+=item.author[-1]
-            text+="%s\t %s \t %s \t%s\n" % (item.title,s_author,item.publisher,item.price)
+            ltext="%s\n %s \n %s \n%s\n" % (item.title,s_author,item.publisher,item.price)
+            self.resultList.item(j).setText(ltext)
+            self.resultList.item(j).setHidden(False)
+            j+=1
+        while j<5:
+            self.resultList.item(j).setHidden(True)
+            j+=1
+
             
-        self.textarea.setText(text)
     def on_search_btn_click(self):
             self.cur_page=1
             self.cur_start=0
@@ -85,8 +95,16 @@ class Form(QDialog):
             self.edit=QLineEdit("enter book name here")
             self.srch_button=QPushButton("search")
             self.textarea=QTextEdit();
+            self.resultList=QListWidget()
             self.next_btn=QPushButton("next")
             self.pre_btn=QPushButton("previous")
+            i=0;
+            while i<5:
+                i+=1
+                temp=QListWidgetItem("")
+                temp.setHidden(True)
+                self.resultList.addItem(temp)
+
 
             layout=QVBoxLayout()
             hlayout=QHBoxLayout()
@@ -100,13 +118,20 @@ class Form(QDialog):
             hlayout.addWidget(self.srch_button)
             layout.addLayout(hlayout)
             layout.addWidget(self.textarea)
+            layout.addWidget(self.resultList)
             layout.addLayout(btnlayout)
             self.setLayout(layout)
             self.srch_button.clicked.connect(self.on_search_btn_click)
             self.next_btn.clicked.connect(self.on_next_btn_click)
             self.pre_btn.clicked.connect(self.on_pre_btn_click)
+            self.resultList.itemDoubleClicked.connect(self.on_listItem_dclick)
             self.edit.setFocus()
             self.resize(700,400)
+    def on_listItem_dclick(self,item):
+            pass
+                
+
+
 
 
 
