@@ -42,9 +42,11 @@ class Form(QDialog):
         self.total_books=self.books['total']
         rtext="find %d books\n" % self.total_books 
         rtext+="current page :%d \n"  % self.cur_page
-        self.textarea.setText(rtext)
-        j=0
+        self.resultLabel.setText(rtext)
         print "books len %d" % len(self.books['book_arr'])
+        self.resultList.clear()
+
+        i=0;
         for item in self.books['book_arr']:
             s_author=""
             for author in item.author[0:-2]:
@@ -52,13 +54,9 @@ class Form(QDialog):
             if(len(item.author)>0):
                 s_author+=item.author[-1]
             ltext="%s\n %s \n %s \n%s\n" % (item.title,s_author,item.publisher,item.price)
-            self.resultList.item(j).setText(ltext)
-            self.resultList.item(j).setHidden(False)
-            j+=1
-        while j<5:
-            self.resultList.item(j).setHidden(True)
-            j+=1
-
+            litem=QListWidgetItem(ltext,type=i)
+            self.resultList.addItem(litem)
+            i+=1
             
     def on_search_btn_click(self):
             self.cur_page=1
@@ -94,16 +92,16 @@ class Form(QDialog):
             self.srch_cmbbox.addItem("标签".decode('utf-8'),"tag")
             self.edit=QLineEdit("enter book name here")
             self.srch_button=QPushButton("search")
-            self.textarea=QTextEdit();
+            self.resultLabel=QLabel();
             self.resultList=QListWidget()
             self.next_btn=QPushButton("next")
             self.pre_btn=QPushButton("previous")
-            i=0;
-            while i<5:
-                i+=1
-                temp=QListWidgetItem("")
-                temp.setHidden(True)
-                self.resultList.addItem(temp)
+            #i=0;
+            #while i<5:
+            #    i+=1
+            #    temp=QListWidgetItem("fwefe")
+            #    #temp.setHidden(True)
+            #    self.resultList.addItem(temp)
 
 
             layout=QVBoxLayout()
@@ -117,7 +115,7 @@ class Form(QDialog):
             hlayout.addWidget(self.edit)
             hlayout.addWidget(self.srch_button)
             layout.addLayout(hlayout)
-            layout.addWidget(self.textarea)
+            layout.addWidget(self.resultLabel)
             layout.addWidget(self.resultList)
             layout.addLayout(btnlayout)
             self.setLayout(layout)
@@ -128,11 +126,9 @@ class Form(QDialog):
             self.edit.setFocus()
             self.resize(700,400)
     def on_listItem_dclick(self,item):
-            pass
-                
-
-
-
+            detailDlg=detailDialog()
+            detailDlg.setBook(self.books['book_arr'][item.type()])
+            return detailDlg.exec_()
 
 
 if __name__=='__main__':
