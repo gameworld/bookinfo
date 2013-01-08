@@ -11,20 +11,26 @@ class detailDialog(QDialog):
         super(detailDialog,self).__init__(parent)
         self.book=book()
 
-    def initui(self,):
+    def initui(self):
         self.title=QLabel(self.book.title)
-        self.lid=QLabel(self.book.bid)
-        self.lalt=QLabel(self.book.alt)
-        self.lauthor=QLabel(self.book.author[0])
-        self.price=QLabel(self.book.price)
+        auth="作者:".decode('utf-8');
+        for item in self.book.author:
+            auth+=" "+item
+        self.lauthor=QLabel(auth)
+        self.publisher=QLabel("出版社:".decode('utf-8')+self.book.publisher)
+        self.publishdate=QLabel("出版日期".decode('utf-8')+self.book.pubdate)
+        self.price=QLabel("定价:".decode('utf-8')+self.book.price)
+        self.lalt=QLabel("<a href=\""+self.book.alt+"\""+"\\>豆瓣链接".decode('utf-8'))
+        self.lalt.setOpenExternalLinks(True)
         self.lsummary=QTextEdit(self.book.summary)
         self.lsummary.setReadOnly(True)
 
         layout=QVBoxLayout()
         layout.addWidget(self.title)
-        layout.addWidget(self.lid)
-        layout.addWidget(self.lalt)
         layout.addWidget(self.lauthor)
+        layout.addWidget(self.publisher)
+        layout.addWidget(self.price)
+        layout.addWidget(self.lalt)
         layout.addWidget(self.lsummary)
         self.setLayout(layout)
     def setBook(self,bookitem):

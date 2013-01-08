@@ -7,7 +7,7 @@ from PySide.QtCore import *
 from request import *
 from book import *
 from detailinfo import *
-from lrequest import *
+from request import *
 
 class Form(QDialog):
     def __init__(self,parent=None):
@@ -34,7 +34,7 @@ class Form(QDialog):
                     ("请输入关键字".decode('utf-8')),
                     QMessageBox.Ok)
             return 
-        ss=lbook_search();
+        ss=book_search();
         print "search key :%s " % self.edit.text()
         print "search type %s" % self.srch_cmbbox.currentIndex()
 
