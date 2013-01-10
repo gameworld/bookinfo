@@ -70,7 +70,7 @@ class Form(QDialog):
             self.books=books;
             self.total_books=self.books['total']
             rtext="find %d books\n" % self.total_books 
-            rtext+="current page :%d \n"  % self.cur_page
+            rtext+="current page :%d "  % self.cur_page
             self.resultLabel.setText(rtext)
             print "books len %d" % len(self.books['book_arr'])
             self.resultList.clear()
