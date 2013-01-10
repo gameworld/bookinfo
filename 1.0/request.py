@@ -5,11 +5,31 @@ import httplib,urllib
 import sys
 import json
 from book import book
+from PySide.QtCore import *
+from PySide import * 
+from PySide.QtCore import  Signal
 
 
-class book_search:
-    def __init__(self):
-        pass
+class book_search(QThread):
+    # create a new signal on the book data back
+    data_back=QtCore.Signal(object)
+    def __init__(self,parent=None):
+        super(book_search,self).__init__(parent)
+        self.key_word='linux'
+        self.atype=0
+        self.lstart=0
+        self.count=5
+
+
+
+    def setSearch_data(self,key_word,attype,start,count):
+        self.key_word=key_word
+        self.attype=attype
+        self.lstart=start
+        self.count=count
+    def run(self):
+        books=self.search(self.key_word,self.atype,self.lstart,self.count);
+        self.data_back.emit(books)
     def search(self,key_word,atype,start,count):
         print "search key :%s " % key_word
         print "atype :%d:" % atype

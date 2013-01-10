@@ -26,38 +26,22 @@ class Form(QDialog):
         self.cur_page=0
         #搜索到的总的图书数
         self.total_books=0
+        self.search=book_search()
 
     #执行搜索操作，关键字,开始索引,期望的条数
     def do_search(self,key_word,start=0,count=5):
+        self.statusLabel.setText("status:searching")
         if(key_word==""):
             QMessageBox.information(self,"infomation",\
                     ("请输入关键字".decode('utf-8')),
                     QMessageBox.Ok)
             return 
-        ss=book_search();
-        print "search key :%s " % self.edit.text()
-        print "search type %s" % self.srch_cmbbox.currentIndex()
-
-        self.books=ss.search(self.edit.text(),self.srch_cmbbox.currentIndex(),start,count)
-        self.total_books=self.books['total']
-        rtext="find %d books\n" % self.total_books 
-        rtext+="current page :%d \n"  % self.cur_page
-        self.resultLabel.setText(rtext)
-        print "books len %d" % len(self.books['book_arr'])
-        self.resultList.clear()
-
-        i=0;
-        for item in self.books['book_arr']:
-            s_author=""
-            for author in item.author[0:-2]:
-                s_author+=author+","
-            if(len(item.author)>0):
-                s_author+=item.author[-1]
-            ltext="%s\n %s \n %s \n%s\n" % (item.title,s_author,item.publisher,item.price)
-            litem=QListWidgetItem(ltext,type=i)
-            self.resultList.addItem(litem)
-            i+=1
-            
+        #print "search key :%s " % self.edit.text()
+        #print "search type %s" % self.srch_cmbbox.currentIndex()
+        self.search.setSearch_data(self.edit.text(),self.srch_cmbbox.currentIndex(),start,count)
+        self.search.data_back.connect(self.onresultCome,Qt.QueuedConnection)
+        self.search.start()
+                    
     def on_search_btn_click(self):
             self.cur_page=1
             self.cur_start=0
@@ -81,8 +65,27 @@ class Form(QDialog):
                     self.pre_btn.setEnabled(False)
                 if(self.cur_start+self.per_page_show<=self.total_books-1):
                     self.next_btn.setEnabled(True)
+    def onresultCome(self,books):
+            self.statusLabel.setText("status:done")
+            self.books=books;
+            self.total_books=self.books['total']
+            rtext="find %d books\n" % self.total_books 
+            rtext+="current page :%d \n"  % self.cur_page
+            self.resultLabel.setText(rtext)
+            print "books len %d" % len(self.books['book_arr'])
+            self.resultList.clear()
 
-            
+            i=0;
+            for item in self.books['book_arr']:
+                s_author=""
+                for author in item.author[0:-2]:
+                    s_author+=author+","
+                if(len(item.author)>0):
+                    s_author+=item.author[-1]
+                ltext="%s\n %s \n %s \n%s\n" % (item.title,s_author,item.publisher,item.price)
+                litem=QListWidgetItem(ltext,type=i)
+                self.resultList.addItem(litem)
+                i+=1
 
     def initui(self):
             self.setWindowTitle("search book")
@@ -93,6 +96,7 @@ class Form(QDialog):
             self.edit=QLineEdit("enter book name here")
             self.srch_button=QPushButton("search")
             self.resultLabel=QLabel();
+            self.statusLabel=QLabel("status:ready")
             self.resultList=QListWidget()
             self.next_btn=QPushButton("next")
             self.pre_btn=QPushButton("previous")
@@ -116,6 +120,7 @@ class Form(QDialog):
             hlayout.addWidget(self.srch_button)
             layout.addLayout(hlayout)
             layout.addWidget(self.resultLabel)
+            layout.addWidget(self.statusLabel)
             layout.addWidget(self.resultList)
             layout.addLayout(btnlayout)
             self.setLayout(layout)
@@ -129,6 +134,8 @@ class Form(QDialog):
             detailDlg=detailDialog()
             detailDlg.setBook(self.books['book_arr'][item.type()])
             return detailDlg.exec_()
+#    def __del__(self):
+#        self.search.quit()
 
 
 if __name__=='__main__':
