@@ -134,7 +134,7 @@ class Form(QDialog):
 if __name__=='__main__':
     app=QApplication(sys.argv)
     form=Form()
-    form.show();
+    form.show()
     sys.exit(app.exec_())
 
 
