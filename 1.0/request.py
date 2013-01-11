@@ -9,7 +9,7 @@ from PySide.QtCore import *
 from PySide import * 
 from PySide.QtCore import  Signal
 
-
+#继承一个线程内，在这个线程完成查询操作，避免阻塞主线程（图形线程）
 class book_search(QThread):
     # create a new signal on the book data back
     data_back=QtCore.Signal(object)
