@@ -1,1 +1,9 @@
 a app to query book info with douban api 
+
+run environment:
+1. python 2.7 http://www.python.org/getit/
+2.pyside 1.1.2  http://qt-project.org/wiki/PySideDownloads
+
+download the matster branch
+cd /1.0
+python main.py
