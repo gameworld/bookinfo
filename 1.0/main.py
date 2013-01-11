@@ -131,7 +131,7 @@ class Form(QDialog):
             self.edit.setFocus()
             self.resize(700,400)
     def on_listItem_dclick(self,item):
-            detailDlg=detailDialog()
+            detailDlg=detailDialog(self)
             detailDlg.setBook(self.books['book_arr'][item.type()])
             return detailDlg.exec_()
 #    def __del__(self):
