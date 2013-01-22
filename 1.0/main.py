@@ -94,7 +94,7 @@ class Form(QDialog):
             self.srch_cmbbox.addItem("书名".decode('utf-8'),"name")
             self.srch_cmbbox.addItem("标签".decode('utf-8'),"tag")
             self.edit=QLineEdit();
-            selt.edit.setPlaceHolder("enter")
+            self.edit.setText("enter keyword here")
             self.srch_button=QPushButton("search")
             self.resultLabel=QLabel();
             self.statusLabel=QLabel("status:ready")
